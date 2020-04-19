@@ -4,23 +4,13 @@ import { HashRouter, Route, Link, Switch, NavLink } from "react-router-dom";
 
 import "../scss/style.scss";
 
-import exercise from "./components/listOfexercises/exercise";
-import ExC from "./components/ExC";
-
-import Nogi from "./components/nogi";
-import nogi from "./components/listOfexercises/nogi";
-
-import Plecy from "./components/plecy";
-import plecy from "./components/listOfexercises/plecy";
-
-import Brzuch from "./components/brzuch";
-import brzuch from "./components/listOfexercises/brzuch";
-
-import Klatka from "./components/klatka";
-import klatka from "./components/listOfexercises/klatka";
-
-import Ramiona from "./components/ramiona";
-import ramiona from "./components/listOfexercises/ramiona";
+import Menu from "./Menu";
+import ExercisesList from "./components/ExercisesList";
+import Legs from "./components/Legs";
+import Stomach from "./components/Stomach";
+import Back from "./components/Back";
+import Chest from "./components/Chest";
+import Schoulders from "./components/Schoulders";
 
 class App extends Component {
   constructor(props) {
@@ -29,104 +19,77 @@ class App extends Component {
       list: [],
     };
   }
-  render() {
-    return (
-      <HashRouter>
-        <>
-          <Ex />
-          <Route exact path="/" component={Ex} />
-          <Route path="/exercises/" component={ExC} />
-        </>
-      </HashRouter>
-    );
-  }
-}
 
-class Ex extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      list: [],
-    };
-  }
-
-  onAdd = (item) => {
+  addHandler = (item) => {
     this.setState({
       list: [...this.state.list, item],
     });
   };
 
-  render() {
-    return (
-      <>
-        <Exercise exercise={exercise} addClick={this.onAdd} />
-        <ExList list={this.state.list} />
-        <Nogi nogi={nogi} addClick={this.onAdd} />
-        <Plecy plecy={plecy} addClick={this.onAdd} />
-        <Brzuch brzuch={brzuch} addClick={this.onAdd} />
-        <Klatka klatka={klatka} addClick={this.onAdd} />
-        <Ramiona ramiona={ramiona} addClick={this.onAdd} />
-      </>
-    );
-  }
-}
+  deleteHandler = (index) => {
+    let exList = this.state.list;
 
-class Exercise extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const exl = exercise.map((el) => {
-      return (
-        <div className="mainTable" key={el.id}>
-          <Link to={"/exercises/" + el.name}> {el.name}</Link>
-        </div>
-      );
+    exList.splice(index, 1);
+    this.setState({
+      list: exList,
     });
-
-    return (
-      <>
-        <h1>Ćwiczenia</h1>
-        <div>{exl}</div>
-      </>
-    );
-  }
-}
-
-export default class ExList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      list: [],
-    };
-    this.removeExercise = this.removeExercise.bind(this);
-  }
-
-  removeExercise = (index) => {
-    console.log("najpierw masa a potem masa" + index);
-    const array = this.state.list;
-    array.splice(index, 1);
-    this.setState({ list: array });
   };
 
   render() {
+    let links = [
+      {
+        url: "stomach",
+        title: "Brzuch",
+      },
+      {
+        url: "legs",
+        title: "Nogi",
+      },
+      {
+        url: "back",
+        title: "Plecy",
+      },
+      {
+        url: "chest",
+        title: "Klatka piersiowa",
+      },
+      {
+        url: "schoulders",
+        title: "Ramiona",
+      },
+    ];
+
     return (
-      <>
-        <h1>Plan</h1>
-        <ul>
-          {this.props.list.map((item, index) => {
-            return (
-              <li className="coś" key={index} index={index}>
-                {item}
-                <button onClick={() => this.removeExercise(index)}>
-                  delete
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </>
+      <HashRouter>
+        <>
+          <Menu menuItems={links} />
+          <ExercisesList
+            elements={this.state.list}
+            onDelete={this.deleteHandler}
+            path="/exercises/exercises"
+          />
+          <Route
+            path="/exercises/legs"
+            render={() => <Legs onClick={this.addHandler} />}
+          />
+          <Route
+            path="/exercises/stomach"
+            render={() => <Stomach onClick={this.addHandler} />}
+          />
+          <Route
+            path="/exercises/chest"
+            render={() => <Chest onClick={this.addHandler} />}
+          />
+          <Route
+            path="/exercises/back"
+            render={() => <Back onClick={this.addHandler} />}
+          />
+          <Route
+            path="/exercises/schoulders"
+            render={() => <Schoulders onClick={this.addHandler} />}
+          />
+        </>
+      </HashRouter>
     );
   }
 }

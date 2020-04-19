@@ -1,0 +1,43 @@
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+
+import exercises from "../exercises";
+
+let style = {
+  button: {
+    padding: "10px",
+    margin: "5px",
+  },
+};
+
+export default class Legs extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <>
+        <h1>Ćwiczenia na nogi</h1>
+        {exercises.stomach.map((element, index) => {
+          return (
+            <button
+              className="btn btn-primary"
+              style={style.button}
+              onClick={() =>
+                this.props.onClick({
+                  category: "stomach",
+                  id: element.id,
+                  name: element.name,
+                })
+              }
+              key={index}
+            >
+              {element.name}
+            </button>
+          );
+        })}
+      </>
+    );
+  }
+}
